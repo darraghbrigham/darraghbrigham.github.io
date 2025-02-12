@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: white;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        .search-box {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-input {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 70%;
+        }
+        .search-button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #ff7eb3;
+            color: white;
+            cursor: pointer;
+        }
+        .weather-card {
+            display: none;
+            padding: 20px;
+        }
+        .weather-card.visible {
+            display: block;
+        }
+        .weather-icon {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="app-title">Weather App</h1>
+        <div class="search-box">
+            <input type="text" id="location" class="search-input" placeholder="Enter a city...">
+            <button id="search" class="search-button">Search</button>
+        </div>
+        <div id="weather-info" class="weather-card">
+            <h2 id="city-name" class="city-name"></h2>
+            <p id="temperature" class="temperature"></p>
+            <p id="description" class="description"></p>
+            <p id="humidity" class="humidity"></p>
+            <p id="wind-speed" class="wind-speed"></p>
+            <img id="weather-icon" class="weather-icon" src="" alt="Weather Icon">
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("search").addEventListener("click", function() {
+            const location = document.getElementById("location").value;
+            if (!location) return;
+            
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=96178b027b8c6c5b96a685a1e4309522`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("city-name").textContent = data.name;
+                    document.getElementById("temperature").textContent = `Temperature: ${data.main.temp}°C`;
+                    document.getElementById("description").textContent = data.weather[0].description;
+                    document.getElementById("humidity").textContent = `Humidity: ${data.main.humidity}%`;
+                    document.getElementById("wind-speed").textContent = `Wind Speed: ${data.wind.speed} m/s`;
+                    document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+                    document.getElementById("weather-info").classList.add("visible");
+                })
+                .catch(error => console.error("Error fetching weather data:", error));
+        });
+    </script>
+</body>
+</html>
